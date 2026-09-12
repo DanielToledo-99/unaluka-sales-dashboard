@@ -4,8 +4,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Unaluka Sales Dashboard",
-  description:
-    "Dashboard comercial para análisis de ventas.",
+  description: "Dashboard comercial de Unaluka",
 };
 
 export default function RootLayout({
@@ -15,9 +14,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es">
-      <body>
-        {children}
-      </body>
+      <body>{children}</body>
     </html>
   );
 }

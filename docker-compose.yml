@@ -3,18 +3,30 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+
     container_name: unaluka-sales-dashboard
+
     ports:
       - "3000:3000"
+
     env_file:
       - .env
+
     environment:
       DATABASE_URL: "file:/app/database/dev.db"
-      ADMIN_EMAILS: "gasto@unaluka.com,tech@unaluka.com"
       AUTH_TRUST_HOST: "true"
+
     volumes:
       - sqlite_data:/app/database
-    command: sh -c "pnpm exec prisma db push && pnpm run db:import && pnpm dev"
+
+    command: >
+      sh -c "
+      pnpm exec prisma db push &&
+      pnpm run db:import &&
+      pnpm dev
+      "
+
     restart: unless-stopped
+
 volumes:
   sqlite_data:

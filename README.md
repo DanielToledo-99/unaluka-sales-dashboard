@@ -1,37 +1,57 @@
 # Unaluka Sales Dashboard
-Dashboard para centralizar ventas de enero a mayo de 2026.
 
-## Stack
-Next.js + TypeScript + Auth.js + Prisma + SQLite + SheetJS.
+Sistema web desarrollado como solución al reto técnico de Unaluka para centralizar y consultar la información comercial correspondiente al periodo enero-mayo de 2026.
 
 ## Funcionalidades
-- Total de ventas
-- Evolución mensual
-- Top productos/SKU
-- Venta por vendedor
-- Login con Google
-- Roles ADMIN / VIEWER
-- Gestión de usuarios
 
-Admins iniciales: `gasto@unaluka.com` y `tech@unaluka.com`.
+- Autenticación mediante Google.
+- Dashboard de ventas.
+- Total acumulado de ventas.
+- Evolución mensual.
+- Ventas por vendedor.
+- Ranking de productos y SKU.
+- Gestión de usuarios.
+- Roles ADMIN y VIEWER.
+- Importación automática de archivos Excel.
+- Ejecución completamente mediante Docker.
 
-## Instalación
+## Administradores iniciales
+
+Los siguientes correos reciben automáticamente permisos de administrador:
+
+- gasto@unaluka.com
+- tech@unaluka.com
+
+Los demás usuarios registrados mediante Google reciben inicialmente permisos de solo lectura.
+
+## Stack
+
+- Next.js 15
+- React 19
+- TypeScript
+- Auth.js / NextAuth
+- Prisma ORM
+- SQLite
+- SheetJS
+- Docker
+- pnpm
+
+## Arquitectura
+
+Los archivos Excel se procesan mediante un script de importación y su información se almacena en SQLite.
+
+Flujo:
+
+Excel -> Import Script -> Prisma -> SQLite -> Next.js
+
+Los archivos utilizados son:
+
+- `data/control_ventas_2026.xlsx`
+- `data/detalle_pedidos_2026.xlsx`
+
+## Variables de entorno
+
+Copiar el archivo:
+
 ```bash
 cp .env.example .env
-npm install
-npx prisma generate
-npx prisma db push
-npm run db:import
-npm run dev
-```
-Abre `http://localhost:3000`.
-
-## Google OAuth
-Crea un OAuth Client Web en Google Cloud Console.
-- Origin: `http://localhost:3000`
-- Redirect URI: `http://localhost:3000/api/auth/callback/google`
-
-Completa `AUTH_GOOGLE_ID`, `AUTH_GOOGLE_SECRET` y `AUTH_SECRET` en `.env`.
-
-## Datos
-`control_ventas_2026.xlsx` alimenta ventas mensuales/por vendedor. `detalle_pedidos_2026.xlsx` alimenta pedidos y productos. `npm run db:import` normaliza ambos en SQLite.
