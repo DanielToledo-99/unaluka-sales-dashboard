@@ -9,7 +9,9 @@ export const INITIAL_ADMINS = (
   "gasto@unaluka.com,tech@unaluka.com"
 )
   .split(",")
-  .map((email) => email.trim().toLowerCase())
+  .map((email) =>
+    email.trim().toLowerCase()
+  )
   .filter(Boolean);
 
 export const {
@@ -26,9 +28,11 @@ export const {
 
   providers: [
     Google({
-      clientId: process.env.AUTH_GOOGLE_ID!,
+      clientId:
+        process.env.AUTH_GOOGLE_ID!,
       clientSecret:
-        process.env.AUTH_GOOGLE_SECRET!,
+        process.env
+          .AUTH_GOOGLE_SECRET!,
     }),
   ],
 
@@ -39,31 +43,11 @@ export const {
   trustHost: true,
 
   events: {
-    async signIn({ user }) {
-      if (!user.id || !user.email) {
-        return;
-      }
-
-      const email =
-        user.email.toLowerCase();
-
-      if (
-        INITIAL_ADMINS.includes(email)
-      ) {
-        await prisma.user.update({
-          where: {
-            id: user.id,
-          },
-
-          data: {
-            role: "ADMIN",
-          },
-        });
-      }
-    },
-
     async createUser({ user }) {
-      if (!user.id || !user.email) {
+      if (
+        !user.id ||
+        !user.email
+      ) {
         return;
       }
 
@@ -71,7 +55,9 @@ export const {
         user.email.toLowerCase();
 
       const role =
-        INITIAL_ADMINS.includes(email)
+        INITIAL_ADMINS.includes(
+          email
+        )
           ? "ADMIN"
           : "VIEWER";
 
@@ -79,7 +65,34 @@ export const {
         where: {
           id: user.id,
         },
+        data: {
+          role,
+        },
+      });
+    },
 
+    async signIn({ user }) {
+      if (
+        !user.id ||
+        !user.email
+      ) {
+        return;
+      }
+
+      const email =
+        user.email.toLowerCase();
+
+      const role =
+        INITIAL_ADMINS.includes(
+          email
+        )
+          ? "ADMIN"
+          : "VIEWER";
+
+      await prisma.user.update({
+        where: {
+          id: user.id,
+        },
         data: {
           role,
         },

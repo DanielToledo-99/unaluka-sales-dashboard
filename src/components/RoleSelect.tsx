@@ -1,12 +1,7 @@
 "use client";
 
-import {
-  useState,
-} from "react";
-
-import {
-  useRouter,
-} from "next/navigation";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 type RoleSelectProps = {
   userId: string;
@@ -19,8 +14,7 @@ export default function RoleSelect({
   currentRole,
   locked = false,
 }: RoleSelectProps) {
-  const router =
-    useRouter();
+  const router = useRouter();
 
   const [role, setRole] =
     useState(currentRole);
@@ -45,36 +39,51 @@ export default function RoleSelect({
     setLoading(true);
 
     try {
-      const response =
-        await fetch(
-          `/api/users/${userId}/role`,
-          {
-            method: "PATCH",
+      const response = await fetch(
+        `/api/user/${userId}/role`,
+        {
+          method: "PATCH",
 
-            headers: {
-              "Content-Type":
-                "application/json",
-            },
+          headers: {
+            "Content-Type":
+              "application/json",
+          },
 
-            body: JSON.stringify({
-              role: newRole,
-            }),
-          }
-        );
+          body: JSON.stringify({
+            role: newRole,
+          }),
+        }
+      );
 
       if (!response.ok) {
-        const result =
-          await response.json();
+        const text =
+          await response.text();
 
-        throw new Error(
-          result.error ??
-            "No se pudo actualizar el rol."
-        );
+        let message =
+          "No se pudo actualizar el rol.";
+
+        if (text) {
+          try {
+            const result =
+              JSON.parse(text);
+
+            message =
+              result.error ??
+              message;
+          } catch {
+            message = text;
+          }
+        }
+
+        throw new Error(message);
       }
 
       router.refresh();
     } catch (error) {
-      console.error(error);
+      console.error(
+        "Error actualizando rol:",
+        error
+      );
 
       setRole(previousRole);
 
